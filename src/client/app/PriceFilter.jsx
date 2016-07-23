@@ -10,7 +10,6 @@ class PriceFilter extends React.Component {
   render() {
     return (
       <div>
-        <input value={this.state.searchParam} />
       </div>
     );
   }
