@@ -9,13 +9,13 @@ class SearchBar extends React.Component {
   }
 
   onChange () {
-    this.setState({searchParam: this.props.value + 'test'});
+    // this.setState({searchParam: this.props.value + 'test'});
   }
 
   render() {
     return (
-      <div>
-        <input value={this.state.searchParam} onChange={this.onChange} />
+      <div className='carSearch'>
+        <input value={this.state.searchParam} onChange={this.onChange} placeholder='Filter by Make' />
       </div>
     );
   }

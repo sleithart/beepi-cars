@@ -21692,15 +21692,15 @@
 	  _createClass(SearchBar, [{
 	    key: 'onChange',
 	    value: function onChange() {
-	      this.setState({ searchParam: this.props.value + 'test' });
+	      // this.setState({searchParam: this.props.value + 'test'});
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
-	        null,
-	        _react2.default.createElement('input', { value: this.state.searchParam, onChange: this.onChange })
+	        { className: 'carSearch' },
+	        _react2.default.createElement('input', { value: this.state.searchParam, onChange: this.onChange, placeholder: 'Filter by Make' })
 	      );
 	    }
 	  }]);
@@ -21806,26 +21806,29 @@
 	    key: "render",
 	    value: function render() {
 	      var carStyle = {
-	        background: 'url(https:' + this.props.image + ') no-repeat center center',
-	        backgroundSize: 'cover'
+	        backgroundImage: 'url(https:' + this.props.image + ')'
 	      };
 	      return _react2.default.createElement(
 	        "div",
-	        { style: carStyle },
+	        { className: "col-md-4" },
 	        _react2.default.createElement(
-	          "span",
-	          null,
-	          this.props.name
-	        ),
-	        _react2.default.createElement(
-	          "span",
-	          null,
-	          this.props.mileage
-	        ),
-	        _react2.default.createElement(
-	          "span",
-	          null,
-	          this.props.year
+	          "div",
+	          { style: carStyle, className: "car" },
+	          _react2.default.createElement(
+	            "div",
+	            { className: "basicInfo" },
+	            _react2.default.createElement(
+	              "span",
+	              { className: "name" },
+	              this.props.name
+	            ),
+	            _react2.default.createElement(
+	              "span",
+	              { className: "price" },
+	              "$",
+	              this.props.price
+	            )
+	          )
 	        )
 	      );
 	    }
@@ -21869,7 +21872,7 @@
 	      });
 	      return _react2.default.createElement(
 	        "div",
-	        null,
+	        { className: "carList" },
 	        carList
 	      );
 	    }

@@ -11,14 +11,17 @@ class Car extends React.Component {
 
   render() {
     var carStyle = {
-      background: 'url(https:' + this.props.image + ') no-repeat center center',
-      backgroundSize: 'cover'
+      backgroundImage: 'url(https:' + this.props.image + ')',
     };
     return (
-      <div style={carStyle}>
-        <span>{this.props.name}</span>
-        <span>{this.props.mileage}</span>
-        <span>{this.props.year}</span>
+      <div className='col-md-4'>
+        <div style={carStyle} className='car'>
+          <div className='basicInfo'>
+            <span className='name'>{this.props.name}</span>
+            {/* <span className='mileage'>{this.props.mileage}</span> */}
+            <span className='price'>${this.props.price}</span>
+          </div>
+        </div>
       </div>
     );
   }
@@ -51,7 +54,7 @@ class CarList extends React.Component {
       carList.push(<Car key={car.id} year={car.year} id={car.id} mileage={car.mileage} image={car.image} name={car.name} price={car.price} bodyType={car.bodyType}/>)
     });
     return (
-      <div>
+      <div className='carList'>
         {carList}
       </div>
     );
