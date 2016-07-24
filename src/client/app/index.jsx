@@ -5,16 +5,38 @@ import PriceFilter from './PriceFilter.jsx';
 import CarList from './CarList.jsx';
 
 
-class App extends React.Component {
-  render () {
-    return (
-        <div>
-            <SearchBar />
-            <PriceFilter />
-            <CarList />
-        </div>
-    );
-  }
-}
+var App = React.createClass({
+    getInitialState: function() {
+        return {
+            searchText: '',
+            priceBound: []
+        };
+    },
+    handleType: function(searchText) {
+        this.setState({
+            searchText: searchText
+        });
+    },
+    handlePriceChange: function(priceBound) {
+        this.setState({
+            priceBound: priceBound
+        });
+    },
+    render: function() {
+        return (
+            <div>
+                <SearchBar
+                    searchText={this.state.searchText}
+                    onUserInput={this.handleType}/>
+                <PriceFilter
+                    priceBound={this.state.priceBound}
+                    onUserInput={this.handlePriceChange}/>
+                <CarList
+                    searchText={this.state.searchText}
+                    priceBound={this.state.priceBound}/>
+            </div>
+        );
+    }
+});
 
 render(<App/>, document.getElementById('app'));

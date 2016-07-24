@@ -9,7 +9,7 @@ body { font-family: 'Source Sans Pro', sans-serif; font-size: 15px; }
 .carSearch input { width: 100%; font-size: 1.5em; height: 3em; background: #FAFAFA; border: 1px solid #979797; border-radius: .25em; padding: .5em; }
 
 .car { background: white no-repeat center center; background-size: cover; height: 200px; color: white; margin: 1em 0; position: relative; }
-.car .basicInfo { background: rgba(0, 0, 0, 0.15); background: linear-gradient(to bottom, transparent 15%, rgba(0, 0, 0, 0.75)); padding: .5em; position: absolute; bottom: 0; width: 100%; }
+.car .basicInfo { background: rgba(0, 0, 0, 0.15); background: linear-gradient(to bottom, transparent, black); padding: 1em .5em .5em; position: absolute; bottom: 0; width: 100%; }
 .car .basicInfo .price { float: right; }
 
 /*# sourceMappingURL=styles.css.map */

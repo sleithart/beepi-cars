@@ -1,25 +1,20 @@
 import React from 'react';
 
-class SearchBar extends React.Component {
+var SearchBar = React.createClass({
 
-  constructor(props) {
-    super(props);
-    this.state = {searchParam: ''};
-    this.onChange = this.onChange.bind(this);
-  }
+  handleChange: function() {
+    this.props.onUserInput(
+      this.refs.searchTextInput.value
+    );
+  },
 
-  onChange () {
-    // this.setState({searchParam: this.props.value + 'test'});
-  }
-
-  render() {
+  render: function() {
     return (
       <div className='carSearch'>
-        <input value={this.state.searchParam} onChange={this.onChange} placeholder='Filter by Make' />
+        <input ref="searchTextInput" value={this.props.searchText} onChange={this.handleChange} placeholder='Filter by Make' />
       </div>
     );
   }
-
-}
+});
 
 export default SearchBar;

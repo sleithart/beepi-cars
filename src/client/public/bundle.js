@@ -49,8 +49,6 @@
 
 	'use strict';
 	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
 	var _react = __webpack_require__(/*! react */ 1);
 	
 	var _react2 = _interopRequireDefault(_react);
@@ -71,36 +69,41 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	var App = _react2.default.createClass({
+	    displayName: 'App',
 	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var App = function (_React$Component) {
-	    _inherits(App, _React$Component);
-	
-	    function App() {
-	        _classCallCheck(this, App);
-	
-	        return _possibleConstructorReturn(this, Object.getPrototypeOf(App).apply(this, arguments));
+	    getInitialState: function getInitialState() {
+	        return {
+	            searchText: '',
+	            priceBound: []
+	        };
+	    },
+	    handleType: function handleType(searchText) {
+	        this.setState({
+	            searchText: searchText
+	        });
+	    },
+	    handlePriceChange: function handlePriceChange(priceBound) {
+	        this.setState({
+	            priceBound: priceBound
+	        });
+	    },
+	    render: function render() {
+	        return _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(_SearchBar2.default, {
+	                searchText: this.state.searchText,
+	                onUserInput: this.handleType }),
+	            _react2.default.createElement(_PriceFilter2.default, {
+	                priceBound: this.state.priceBound,
+	                onUserInput: this.handlePriceChange }),
+	            _react2.default.createElement(_CarList2.default, {
+	                searchText: this.state.searchText,
+	                priceBound: this.state.priceBound })
+	        );
 	    }
-	
-	    _createClass(App, [{
-	        key: 'render',
-	        value: function render() {
-	            return _react2.default.createElement(
-	                'div',
-	                null,
-	                _react2.default.createElement(_SearchBar2.default, null),
-	                _react2.default.createElement(_PriceFilter2.default, null),
-	                _react2.default.createElement(_CarList2.default, null)
-	            );
-	        }
-	    }]);
-	
-	    return App;
-	}(_react2.default.Component);
+	});
 	
 	(0, _reactDom.render)(_react2.default.createElement(App, null), document.getElementById('app'));
 
@@ -21662,51 +21665,28 @@
 	  value: true
 	});
 	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
 	var _react = __webpack_require__(/*! react */ 1);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	var SearchBar = _react2.default.createClass({
+	  displayName: 'SearchBar',
 	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	  handleChange: function handleChange() {
+	    this.props.onUserInput(this.refs.searchTextInput.value);
+	  },
 	
-	var SearchBar = function (_React$Component) {
-	  _inherits(SearchBar, _React$Component);
-	
-	  function SearchBar(props) {
-	    _classCallCheck(this, SearchBar);
-	
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SearchBar).call(this, props));
-	
-	    _this.state = { searchParam: '' };
-	    _this.onChange = _this.onChange.bind(_this);
-	    return _this;
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'carSearch' },
+	      _react2.default.createElement('input', { ref: 'searchTextInput', value: this.props.searchText, onChange: this.handleChange, placeholder: 'Filter by Make' })
+	    );
 	  }
-	
-	  _createClass(SearchBar, [{
-	    key: 'onChange',
-	    value: function onChange() {
-	      // this.setState({searchParam: this.props.value + 'test'});
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'carSearch' },
-	        _react2.default.createElement('input', { value: this.state.searchParam, onChange: this.onChange, placeholder: 'Filter by Make' })
-	      );
-	    }
-	  }]);
-	
-	  return SearchBar;
-	}(_react2.default.Component);
+	});
 	
 	exports.default = SearchBar;
 
@@ -21740,19 +21720,16 @@
 	var PriceFilter = function (_React$Component) {
 	  _inherits(PriceFilter, _React$Component);
 	
-	  function PriceFilter(props) {
+	  function PriceFilter() {
 	    _classCallCheck(this, PriceFilter);
 	
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PriceFilter).call(this, props));
-	
-	    _this.state = { searchParam: '' };
-	    return _this;
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PriceFilter).apply(this, arguments));
 	  }
 	
 	  _createClass(PriceFilter, [{
 	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement('div', null);
+	      return _react2.default.createElement('div', { className: 'priceRangeSlider' });
 	    }
 	  }]);
 	
@@ -21788,6 +21765,7 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
+	// This is a placeholder, because I can't fetch a local file
 	var data_url = "https://raw.githubusercontent.com/sleithart/beepi-cars/master/src/client/app/cars.json?token=ABDrhaU0w6hOOen1t4Kdm8_fPM5yGyFSks5XnDURwA%3D%3D";
 	
 	var Car = function (_React$Component) {
@@ -21860,14 +21838,17 @@
 	        _this3.setState({
 	          cars: jsonResult
 	        });
-	        console.log(_this3.state);
 	      });
 	    }
 	  }, {
 	    key: "render",
 	    value: function render() {
 	      var carList = [];
+	      var re = new RegExp(this.props.searchText, 'gi');
 	      this.state.cars.forEach(function (car) {
+	        if (!car.name.match(re)) {
+	          return;
+	        }
 	        carList.push(_react2.default.createElement(Car, { key: car.id, year: car.year, id: car.id, mileage: car.mileage, image: car.image, name: car.name, price: car.price, bodyType: car.bodyType }));
 	      });
 	      return _react2.default.createElement(
