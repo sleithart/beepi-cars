@@ -109,8 +109,17 @@
 	    },
 	
 	    carIsMatch: function carIsMatch(car) {
-	        var re = new RegExp(this.state.searchText, 'gi');
-	        return car.name.match(re) || car.bodyType.match(re) || car.mileage.toString().match(re) || car.year.toString().match(re);
+	        var matchArray = [];
+	        var searchTextArray = this.state.searchText.split(' ');
+	        var re = new RegExp('(' + searchTextArray.join('|') + ')', 'i');
+	
+	        var searchItems = [car.name, car.bodyType, car.mileage.toString(), car.year.toString()];
+	        searchItems.forEach(function (searchItem) {
+	            matchArray.push(re.test(searchItem));
+	        });
+	        return matchArray.some(function (match) {
+	            return match === true;
+	        });
 	    },
 	
 	    render: function render() {
