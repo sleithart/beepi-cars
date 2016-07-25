@@ -1,8 +1,5 @@
 import React from "react";
 
-// This is a placeholder, because I can't fetch a local file
-const data_url = "https://raw.githubusercontent.com/sleithart/beepi-cars/master/src/client/app/cars.json?token=ABDrhaU0w6hOOen1t4Kdm8_fPM5yGyFSks5XnDURwA%3D%3D"
-
 class Car extends React.Component {
 
   constructor(props) {
@@ -30,29 +27,11 @@ class Car extends React.Component {
 }
 
 class CarList extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {cars: []};
-  }
-
-  componentDidMount() {
-    fetch(data_url)
-      .then(result => {
-        return result.json()
-      })
-      .then(jsonResult => {
-        this.setState({
-          cars : jsonResult
-        })
-      });
-  }
-
   render() {
     var carList = [];
     var re = new RegExp(this.props.searchText, 'gi');
-    this.state.cars.forEach(car => {
-      if (!car.name.match(re)) {
+    this.props.carList.forEach(car => {
+      if (!car.name.match(re) || !(car.price >= this.props.priceBound.min && car.price <= this.props.priceBound.max)) {
         return;
       }
       carList.push(<Car key={car.id} year={car.year} id={car.id} mileage={car.mileage} image={car.image} name={car.name} price={car.price} bodyType={car.bodyType}/>)
@@ -63,7 +42,6 @@ class CarList extends React.Component {
       </div>
     );
   }
-
 }
 
 export default CarList;

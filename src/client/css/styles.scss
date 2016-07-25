@@ -1,3 +1,5 @@
+$beepiBlue: #1A9AFC;
+
 body {
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 15px;
@@ -10,11 +12,27 @@ body {
     margin: 0 auto;
 }
 
+// pulled from beepi.com
+#logo {
+    margin: 1em auto;
+    height: 35px;
+    width: 100px;
+    cursor: pointer;
+    background-image: url("https://static.beepi.com/images/Sprite_HeaderIcons_Retina_v14.png");
+    background-repeat: no-repeat;
+    background-size: auto 35px;
+    background-position: -195px -0px;
+    z-index: 9999;
+    display: block;
+    vertical-align: middle;
+}
+
 .header {
     text-align: center;
-    color: #1A9AFC;
+    color: $beepiBlue;
     font-weight: 100;
     text-transform: uppercase;
+    margin-bottom: 5em;
 
     sup {
         text-transform: none;
@@ -58,4 +76,129 @@ body {
             float: right;
         }
     }
+}
+
+
+.priceFilterWrapper {
+    height: 200px;
+}
+.histogram {
+    position: relative;
+    width: 100%;
+    margin: 150px 0 -.5rem;
+    display: inline-block;
+
+    .carBar {
+        background: #eee;
+        position: absolute;
+        bottom: 0;
+        transition: 1s ease;
+        height: 0;
+        max-height: 150px;
+    }
+}
+
+.InputRange-slider {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  background: white;
+  border: 1px solid $beepiBlue;
+  border-radius: 100%;
+  cursor: pointer;
+  display: block;
+  height: 1.5rem;
+  margin-left: -0.5rem;
+  margin-top: -0.9rem;
+  outline: none;
+  position: absolute;
+  top: 50%;
+  transition: -webkit-transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  width: 1.5rem;
+
+  &:active {
+    -webkit-transform: scale(1.3);
+            transform: scale(1.3);
+        }
+  &:focus {
+    box-shadow: 0 0 0 5px rgba(63, 81, 181, 0.2);
+  }
+}
+
+.InputRange.is-disabled .InputRange-slider {
+    background: #cccccc;
+    border: 1px solid #cccccc;
+    box-shadow: none;
+    -webkit-transform: none;
+            transform: none;
+}
+
+.InputRange-sliderContainer {
+  transition: left 0.3s ease-out;
+}
+
+.InputRange-label {
+  color: #aaaaaa;
+  white-space: nowrap;
+}
+
+.InputRange-label--min,
+.InputRange-label--max {
+  position: absolute;
+  top: 50%;
+  margin-top: 1.4rem;
+  font-size: 1.5em;
+  color: #666;
+}
+
+.InputRange-label--min {
+  left: 0;
+}
+
+.InputRange-label--max {
+  right: 0;
+}
+
+.InputRange-label--value {
+  display: none;
+}
+
+.InputRange-labelContainer {
+  left: -50%;
+  position: relative;
+}
+.InputRange-label--max .InputRange-labelContainer {
+    left: 50%;
+}
+
+.InputRange-track {
+  background: #eeeeee;
+  border-radius: 0.3rem;
+  display: block;
+  height: 0.3rem;
+  position: relative;
+  transition: left 0.3s ease-out, width 0.3s ease-out;
+}
+  .InputRange.is-disabled .InputRange-track {
+    background: #eeeeee;
+}
+
+.InputRange-track--container {
+  left: 0;
+  margin-top: -0.15rem;
+  position: absolute;
+  right: 0;
+  top: 50%;
+}
+
+.InputRange-track--active {
+  background: $beepiBlue;
+}
+
+.InputRange {
+  cursor: pointer;
+  height: 1rem;
+  position: relative;
+  width: 100%;
 }
