@@ -1,4 +1,11 @@
 $beepiBlue: #1A9AFC;
+$lightgray: #ccc;
+$offwhite: #eee;
+$carHeight: 200px;
+
+* {
+    box-sizing: border-box;
+}
 
 body {
     font-family: 'Source Sans Pro', sans-serif;
@@ -12,7 +19,7 @@ body {
     margin: 0 auto;
 }
 
-// pulled from beepi.com
+// pulled from the beepi.com logo
 #logo {
     margin: 1em auto;
     height: 35px;
@@ -56,24 +63,60 @@ body {
     }
 }
 
+.carList {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-flow: space-between;
+    justify-content: center;
+    align-content: flex-start;
+    margin-top: 50px;
+}
+
 .car {
     background: white no-repeat center center;
     background-size: cover;
-    height: 200px;
+    height: $carHeight;
     color: white;
-    margin: 1em 0;
+    margin: 1em;
     position: relative;
+    flex: 0 1 350px;
+    transition: .4s ease;
+
+    @media screen and (max-width: 900px) {
+        flex-grow: 1;
+    }
 
     .basicInfo {
         background: rgba(0,0,0,.15);
         background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,1));
-        padding: 1em .5em .5em;
+        padding: 2em .5em .5em;
         position: absolute;
         bottom: 0;
         width: 100%;
 
         .price {
             float: right;
+        }
+    }
+
+    .detailedInfo {
+        max-height: 0;
+        height: auto;
+        overflow: hidden;
+        transition: .4s ease;
+
+        span:not(:last-child):after {
+            content: "\00b7";
+            margin: 0 .25em;
+        }
+    }
+    &.hover {
+        box-shadow: 0 0 50px rgba(0,0,0,.25);
+        transform: scale(1.01);
+
+        .detailedInfo {
+            max-height: $carHeight;
         }
     }
 }
@@ -89,116 +132,125 @@ body {
     display: inline-block;
 
     .carBar {
-        background: #eee;
+        background: #ddd;
         position: absolute;
         bottom: 0;
-        transition: 1s ease;
         height: 0;
         max-height: 150px;
+        transition: 1s ease-out;
     }
 }
 
-.InputRange-slider {
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  background: white;
-  border: 1px solid $beepiBlue;
-  border-radius: 100%;
-  cursor: pointer;
-  display: block;
-  height: 1.5rem;
-  margin-left: -0.5rem;
-  margin-top: -0.9rem;
-  outline: none;
-  position: absolute;
-  top: 50%;
-  transition: -webkit-transform 0.3s ease-out, box-shadow 0.3s ease-out;
-  transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
-  width: 1.5rem;
 
-  &:active {
-    -webkit-transform: scale(1.3);
-            transform: scale(1.3);
-        }
-  &:focus {
-    box-shadow: 0 0 0 5px rgba(63, 81, 181, 0.2);
-  }
+// Taken from https://github.com/davidchin/react-input-range
+// and modified to suit
+
+.InputRange-slider {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: white;
+    border: 1px solid $beepiBlue;
+    border-radius: 100%;
+    cursor: pointer;
+    display: block;
+    height: 1.5rem;
+    margin-left: -0.5rem;
+    margin-top: -0.9rem;
+    outline: none;
+    position: absolute;
+    top: 50%;
+    transition: -webkit-transform 0.3s ease-out, box-shadow 0.3s ease-out;
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+    width: 1.5rem;
+
+    &:active {
+        -webkit-transform: scale(1.3);
+        transform: scale(1.3);
+    }
+    &:focus {
+        box-shadow: 0 0 0 5px rgba(63, 81, 181, 0.2);
+    }
 }
 
+
 .InputRange.is-disabled .InputRange-slider {
-    background: #cccccc;
-    border: 1px solid #cccccc;
+    background: $lightgray;
+    border: 1px solid $lightgray;
     box-shadow: none;
     -webkit-transform: none;
-            transform: none;
+    transform: none;
 }
 
 .InputRange-sliderContainer {
-  transition: left 0.3s ease-out;
+    transition: left 0.3s ease-out;
 }
 
 .InputRange-label {
-  color: #aaaaaa;
-  white-space: nowrap;
+    color: #aaaaaa;
+    white-space: nowrap;
 }
 
 .InputRange-label--min,
 .InputRange-label--max {
-  position: absolute;
-  top: 50%;
-  margin-top: 1.4rem;
-  font-size: 1.5em;
-  color: #666;
+    position: absolute;
+    top: 50%;
+    margin-top: 1.4rem;
+    font-size: 1.5em;
+    color: #666;
+
+    @media screen and (max-width: 767px) {
+        font-size: 1.25rem;
+    }
 }
 
 .InputRange-label--min {
-  left: 0;
+    left: 0;
 }
 
 .InputRange-label--max {
-  right: 0;
+    right: 0;
 }
 
 .InputRange-label--value {
-  display: none;
+    display: none;
 }
 
 .InputRange-labelContainer {
-  left: -50%;
-  position: relative;
+    left: -50%;
+    position: relative;
 }
 .InputRange-label--max .InputRange-labelContainer {
-    left: 50%;
+    left: 35%;
 }
 
 .InputRange-track {
-  background: #eeeeee;
-  border-radius: 0.3rem;
-  display: block;
-  height: 0.3rem;
-  position: relative;
-  transition: left 0.3s ease-out, width 0.3s ease-out;
+    background: $offwhite;
+    border-radius: 0.3rem;
+    display: block;
+    height: 0.3rem;
+    position: relative;
+    transition: left 0.3s ease-out, width 0.3s ease-out;
 }
-  .InputRange.is-disabled .InputRange-track {
-    background: #eeeeee;
+.InputRange.is-disabled .InputRange-track {
+    background: $offwhite;
 }
 
 .InputRange-track--container {
-  left: 0;
-  margin-top: -0.15rem;
-  position: absolute;
-  right: 0;
-  top: 50%;
+    left: 0;
+    margin-top: -0.15rem;
+    position: absolute;
+    right: 0;
+    top: 50%;
 }
 
 .InputRange-track--active {
-  background: $beepiBlue;
+    background: $beepiBlue;
 }
 
 .InputRange {
-  cursor: pointer;
-  height: 1rem;
-  position: relative;
-  width: 100%;
+    cursor: pointer;
+    height: 1rem;
+    position: relative;
+    width: 100%;
 }

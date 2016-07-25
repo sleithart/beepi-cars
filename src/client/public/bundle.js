@@ -75,7 +75,10 @@
 	var App = _react2.default.createClass({
 	    displayName: 'App',
 	
-	    componentDidMount: function componentDidMount() {
+	    minPrice: 0,
+	    maxPrice: 100000,
+	
+	    componentWillMount: function componentWillMount() {
 	        var _this = this;
 	
 	        fetch(data_url).then(function (result) {
@@ -89,10 +92,11 @@
 	    getInitialState: function getInitialState() {
 	        return {
 	            cars: [],
-	            searchText: '',
-	            priceBound: { min: 0, max: 100000 }
+	            searchText: localStorage.searchText || '',
+	            priceBound: { min: localStorage.min || this.minPrice, max: localStorage.max || this.maxPrice }
 	        };
 	    },
+	
 	    handleType: function handleType(searchText) {
 	        this.setState({
 	            searchText: searchText
@@ -103,7 +107,22 @@
 	            priceBound: priceBound
 	        });
 	    },
+	
+	    carIsMatch: function carIsMatch(car) {
+	        var re = new RegExp(this.state.searchText, 'gi');
+	        return car.name.match(re) || car.bodyType.match(re) || car.mileage.toString().match(re) || car.year.toString().match(re);
+	    },
+	
 	    render: function render() {
+	        var _this2 = this;
+	
+	        var filteredCars = [];
+	        this.state.cars.forEach(function (car) {
+	            if (!_this2.carIsMatch(car) || !(car.price >= _this2.state.priceBound.min && car.price <= _this2.state.priceBound.max)) {
+	                return;
+	            }
+	            filteredCars.push(car);
+	        });
 	        return _react2.default.createElement(
 	            'div',
 	            null,
@@ -111,13 +130,9 @@
 	                searchText: this.state.searchText,
 	                onUserInput: this.handleType }),
 	            _react2.default.createElement(_PriceFilter2.default, {
-	                priceBound: this.state.priceBound,
-	                onUserInput: this.handlePriceChange,
-	                carList: this.state.cars }),
-	            _react2.default.createElement(_CarList2.default, {
-	                searchText: this.state.searchText,
-	                priceBound: this.state.priceBound,
-	                carList: this.state.cars })
+	                carList: filteredCars,
+	                onUserInput: this.handlePriceChange }),
+	            _react2.default.createElement(_CarList2.default, { carList: filteredCars })
 	        );
 	    }
 	});
@@ -21694,13 +21709,15 @@
 	
 	  handleChange: function handleChange() {
 	    this.props.onUserInput(this.refs.searchTextInput.value);
+	    localStorage.setItem('searchText', this.refs.searchTextInput.value);
 	  },
 	
 	  render: function render() {
+	    var searchText = this.props.searchText || localStorage.searchText;
 	    return _react2.default.createElement(
 	      'div',
 	      { className: 'carSearch' },
-	      _react2.default.createElement('input', { ref: 'searchTextInput', value: this.props.searchText, onChange: this.handleChange, placeholder: 'Filter by Make' })
+	      _react2.default.createElement('input', { ref: 'searchTextInput', value: searchText, onChange: this.handleChange, placeholder: 'Filter by Make, Year, Mileage, Body Type...' })
 	    );
 	  }
 	});
@@ -21770,38 +21787,58 @@
 	    minPrice: 0,
 	    maxPrice: 100000,
 	    gap: 1000,
+	    priceMultiplier: 7,
 	
-	    componentDidUpdate: function componentDidUpdate() {
-	        // only do this if we haven't already done it
-	        if (this.state.histogramCars.length) {
+	    shouldUseLocalStorage: function shouldUseLocalStorage() {
+	        return localStorage.min && localStorage.max;
+	    },
+	
+	    getLocalStorageValues: function getLocalStorageValues() {
+	        return {
+	            min: parseInt(localStorage.min, 10),
+	            max: parseInt(localStorage.max, 10)
+	        };
+	    },
+	
+	    componentWillMount: function componentWillMount() {
+	        if (this.shouldUseLocalStorage()) {
+	            this.setState({
+	                values: this.getLocalStorageValues()
+	            });
+	        }
+	    },
+	
+	    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	        // We only want to do this on initial load
+	        if (this.props.carList.length || !nextProps.carList.length) {
 	            return;
 	        }
+	
 	        var histogramCars = [],
 	            defaultValues = { min: this.maxPrice, max: this.minPrice };
 	
-	        this.props.carList.forEach(function (car) {
+	        nextProps.carList.forEach(function (car) {
 	            histogramCars.push(car.price);
 	            defaultValues.min = car.price < defaultValues.min ? car.price : defaultValues.min;
 	            defaultValues.max = car.price > defaultValues.max ? car.price : defaultValues.max;
 	        });
 	
-	        if (localStorage.min && localStorage.max) {
-	            defaultValues = {
-	                min: parseInt(localStorage.min, 10),
-	                max: parseInt(localStorage.max, 10)
-	            };
+	        // Round to nearest thousands place
+	        defaultValues.min = Math.floor(defaultValues.min / 1000) * 1000;
+	        defaultValues.max = Math.ceil(defaultValues.max / 1000) * 1000;
+	
+	        // local storage takes precedence over defaults
+	        if (this.shouldUseLocalStorage()) {
+	            defaultValues = this.getLocalStorageValues();
 	        }
 	
 	        this.setState({
 	            histogramCars: histogramCars,
-	            values: {
-	                min: defaultValues.min,
-	                max: defaultValues.max
-	            }
+	            values: defaultValues
 	        });
 	    },
 	
-	    getInitialState: function getInitialState(props) {
+	    getInitialState: function getInitialState() {
 	        return {
 	            histogramCars: [],
 	            values: {
@@ -21812,7 +21849,12 @@
 	    },
 	
 	    handleChange: function handleChange(component, values) {
+	        var histogramCars = [];
+	        this.props.carList.forEach(function (car) {
+	            histogramCars.push(car.price);
+	        });
 	        this.setState({
+	            histogramCars: histogramCars,
 	            values: values
 	        });
 	        this.props.onUserInput(values);
@@ -21825,12 +21867,13 @@
 	            numCars = 0,
 	            carWidth = document.getElementById('app').offsetWidth / ((this.maxPrice - this.minPrice) / 1000),
 	            carPosition = 0;
+	
 	        for (var i = this.minPrice; i <= this.maxPrice; i += this.gap) {
-	            numCars = this.state.histogramCars.filter(function (car) {
-	                return car <= i && car > i - 1000;
+	            numCars = this.props.carList.filter(function (car) {
+	                return car.price <= i && car.price > i - 1000;
 	            });
 	            numCars = numCars.length || 0;
-	            histogram.push(_react2.default.createElement(CarBar, { key: i, height: numCars * 5, width: carWidth, left: carPosition }));
+	            histogram.push(_react2.default.createElement(CarBar, { key: i, height: numCars * this.priceMultiplier, width: carWidth, left: carPosition }));
 	            carPosition += carWidth;
 	        }
 	
@@ -23757,55 +23800,79 @@
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 	
-	var Car = function (_React$Component) {
-	  _inherits(Car, _React$Component);
+	var Car = _react2.default.createClass({
+	  displayName: "Car",
 	
-	  function Car(props) {
-	    _classCallCheck(this, Car);
 	
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Car).call(this, props));
+	  getInitialState: function getInitialState(props) {
+	    return {
+	      searchParam: "",
+	      hover: ""
+	    };
+	  },
 	
-	    _this.state = { searchParam: "" };
-	    return _this;
-	  }
+	  handleMouseOver: function handleMouseOver() {
+	    this.setState({
+	      hover: "hover"
+	    });
+	  },
 	
-	  _createClass(Car, [{
-	    key: "render",
-	    value: function render() {
-	      var carStyle = {
-	        backgroundImage: 'url(https:' + this.props.image + ')'
-	      };
-	      return _react2.default.createElement(
+	  handleMouseOut: function handleMouseOut() {
+	    this.setState({
+	      hover: ""
+	    });
+	  },
+	
+	  render: function render() {
+	    var carStyle = {
+	      backgroundImage: 'url(https:' + this.props.image + ')'
+	    };
+	    var className = 'car ' + this.state.hover;
+	    return _react2.default.createElement(
+	      "div",
+	      { style: carStyle, className: className, onMouseOver: this.handleMouseOver, onMouseOut: this.handleMouseOut },
+	      _react2.default.createElement(
 	        "div",
-	        { className: "col-md-4" },
+	        { className: "basicInfo" },
+	        _react2.default.createElement(
+	          "span",
+	          { className: "name" },
+	          this.props.name
+	        ),
+	        _react2.default.createElement(
+	          "span",
+	          { className: "price" },
+	          "$",
+	          this.props.price
+	        ),
 	        _react2.default.createElement(
 	          "div",
-	          { style: carStyle, className: "car" },
+	          { className: "detailedInfo" },
 	          _react2.default.createElement(
-	            "div",
-	            { className: "basicInfo" },
-	            _react2.default.createElement(
-	              "span",
-	              { className: "name" },
-	              this.props.name
-	            ),
-	            _react2.default.createElement(
-	              "span",
-	              { className: "price" },
-	              "$",
-	              this.props.price
-	            )
+	            "span",
+	            { className: "mileage" },
+	            this.props.mileage,
+	            "mi"
+	          ),
+	          _react2.default.createElement(
+	            "span",
+	            { className: "year" },
+	            this.props.year
+	          ),
+	          _react2.default.createElement(
+	            "span",
+	            { className: "bodyType" },
+	            this.props.bodyType
 	          )
 	        )
-	      );
-	    }
-	  }]);
+	      )
+	    );
+	  }
 	
-	  return Car;
-	}(_react2.default.Component);
+	});
 	
-	var CarList = function (_React$Component2) {
-	  _inherits(CarList, _React$Component2);
+	var CarList = function (_React$Component) {
+	  _inherits(CarList, _React$Component);
 	
 	  function CarList() {
 	    _classCallCheck(this, CarList);
@@ -23816,14 +23883,8 @@
 	  _createClass(CarList, [{
 	    key: "render",
 	    value: function render() {
-	      var _this3 = this;
-	
 	      var carList = [];
-	      var re = new RegExp(this.props.searchText, 'gi');
 	      this.props.carList.forEach(function (car) {
-	        if (!car.name.match(re) || !(car.price >= _this3.props.priceBound.min && car.price <= _this3.props.priceBound.max)) {
-	          return;
-	        }
 	        carList.push(_react2.default.createElement(Car, { key: car.id, year: car.year, id: car.id, mileage: car.mileage, image: car.image, name: car.name, price: car.price, bodyType: car.bodyType }));
 	      });
 	      return _react2.default.createElement(

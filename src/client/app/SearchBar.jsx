@@ -6,12 +6,14 @@ var SearchBar = React.createClass({
     this.props.onUserInput(
       this.refs.searchTextInput.value
     );
+    localStorage.setItem('searchText', this.refs.searchTextInput.value);
   },
 
   render: function() {
+    var searchText = this.props.searchText || localStorage.searchText;
     return (
       <div className='carSearch'>
-        <input ref="searchTextInput" value={this.props.searchText} onChange={this.handleChange} placeholder='Filter by Make' />
+        <input ref="searchTextInput" value={searchText} onChange={this.handleChange} placeholder='Filter by Make, Year, Mileage, Body Type...' />
       </div>
     );
   }

@@ -8,24 +8,28 @@ import CarList from './CarList.jsx';
 const data_url = "https://raw.githubusercontent.com/sleithart/beepi-cars/master/src/client/app/cars.json?token=ABDrhaU0w6hOOen1t4Kdm8_fPM5yGyFSks5XnDURwA%3D%3D"
 
 var App = React.createClass({
-    componentDidMount: function() {
+    minPrice: 0,
+    maxPrice: 100000,
+
+    componentWillMount: function() {
         fetch(data_url)
             .then(result => {
                 return result.json()
             })
             .then(jsonResult => {
                 this.setState({
-                    cars : jsonResult
+                    cars : jsonResult,
                 })
         });
     },
     getInitialState: function() {
         return {
             cars: [],
-            searchText: '',
-            priceBound: {min: 0, max: 100000}
+            searchText: localStorage.searchText || '',
+            priceBound: {min: localStorage.min || this.minPrice, max: localStorage.max || this.maxPrice}
         };
     },
+
     handleType: function(searchText) {
         this.setState({
             searchText: searchText
@@ -36,20 +40,29 @@ var App = React.createClass({
             priceBound: priceBound
         });
     },
+
+    carIsMatch: function(car) {
+        var re = new RegExp(this.state.searchText, 'gi');
+        return car.name.match(re) || car.bodyType.match(re) || car.mileage.toString().match(re) || car.year.toString().match(re);
+    },
+
     render: function() {
+        var filteredCars = [];
+        this.state.cars.forEach(car => {
+            if (!this.carIsMatch(car) || !(car.price >= this.state.priceBound.min && car.price <= this.state.priceBound.max)) {
+              return;
+            }
+            filteredCars.push(car);
+        });
         return (
             <div>
                 <SearchBar
                     searchText={this.state.searchText}
                     onUserInput={this.handleType}/>
                 <PriceFilter
-                    priceBound={this.state.priceBound}
-                    onUserInput={this.handlePriceChange}
-                    carList={this.state.cars}/>
-                <CarList
-                    searchText={this.state.searchText}
-                    priceBound={this.state.priceBound}
-                    carList={this.state.cars}/>
+                    carList={filteredCars}
+                    onUserInput={this.handlePriceChange} />
+                <CarList carList={filteredCars} />
             </div>
         );
     }

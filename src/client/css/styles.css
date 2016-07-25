@@ -1,3 +1,5 @@
+* { box-sizing: border-box; }
+
 body { font-family: 'Source Sans Pro', sans-serif; font-size: 15px; }
 
 .header, #app { width: 90%; max-width: 1280px; margin: 0 auto; }
@@ -10,26 +12,34 @@ body { font-family: 'Source Sans Pro', sans-serif; font-size: 15px; }
 .carSearch { width: 100%; padding: 0 1em; box-sizing: border-box; }
 .carSearch input { width: 100%; font-size: 1.5em; height: 3em; background: #FAFAFA; border: 1px solid #979797; border-radius: .25em; padding: .5em; }
 
-.car { background: white no-repeat center center; background-size: cover; height: 200px; color: white; margin: 1em 0; position: relative; }
-.car .basicInfo { background: rgba(0, 0, 0, 0.15); background: linear-gradient(to bottom, transparent, black); padding: 1em .5em .5em; position: absolute; bottom: 0; width: 100%; }
+.carList { display: flex; flex-direction: row; flex-wrap: wrap; flex-flow: space-between; justify-content: center; align-content: flex-start; margin-top: 50px; }
+
+.car { background: white no-repeat center center; background-size: cover; height: 200px; color: white; margin: 1em; position: relative; flex: 0 1 350px; transition: .4s ease; }
+@media screen and (max-width: 900px) { .car { flex-grow: 1; } }
+.car .basicInfo { background: rgba(0, 0, 0, 0.15); background: linear-gradient(to bottom, transparent, black); padding: 2em .5em .5em; position: absolute; bottom: 0; width: 100%; }
 .car .basicInfo .price { float: right; }
+.car .detailedInfo { max-height: 0; height: auto; overflow: hidden; transition: .4s ease; }
+.car .detailedInfo span:not(:last-child):after { content: "\00b7"; margin: 0 .25em; }
+.car.hover { box-shadow: 0 0 50px rgba(0, 0, 0, 0.25); transform: scale(1.01); }
+.car.hover .detailedInfo { max-height: 200px; }
 
 .priceFilterWrapper { height: 200px; }
 
 .histogram { position: relative; width: 100%; margin: 150px 0 -.5rem; display: inline-block; }
-.histogram .carBar { background: #eee; position: absolute; bottom: 0; transition: 1s ease; height: 0; max-height: 150px; }
+.histogram .carBar { background: #ddd; position: absolute; bottom: 0; height: 0; max-height: 150px; transition: 1s ease-out; }
 
 .InputRange-slider { -webkit-appearance: none; -moz-appearance: none; appearance: none; background: white; border: 1px solid #1A9AFC; border-radius: 100%; cursor: pointer; display: block; height: 1.5rem; margin-left: -0.5rem; margin-top: -0.9rem; outline: none; position: absolute; top: 50%; transition: -webkit-transform 0.3s ease-out, box-shadow 0.3s ease-out; transition: transform 0.3s ease-out, box-shadow 0.3s ease-out; width: 1.5rem; }
 .InputRange-slider:active { -webkit-transform: scale(1.3); transform: scale(1.3); }
 .InputRange-slider:focus { box-shadow: 0 0 0 5px rgba(63, 81, 181, 0.2); }
 
-.InputRange.is-disabled .InputRange-slider { background: #cccccc; border: 1px solid #cccccc; box-shadow: none; -webkit-transform: none; transform: none; }
+.InputRange.is-disabled .InputRange-slider { background: #ccc; border: 1px solid #ccc; box-shadow: none; -webkit-transform: none; transform: none; }
 
 .InputRange-sliderContainer { transition: left 0.3s ease-out; }
 
 .InputRange-label { color: #aaaaaa; white-space: nowrap; }
 
 .InputRange-label--min, .InputRange-label--max { position: absolute; top: 50%; margin-top: 1.4rem; font-size: 1.5em; color: #666; }
+@media screen and (max-width: 767px) { .InputRange-label--min, .InputRange-label--max { font-size: 1.25rem; } }
 
 .InputRange-label--min { left: 0; }
 
@@ -39,11 +49,11 @@ body { font-family: 'Source Sans Pro', sans-serif; font-size: 15px; }
 
 .InputRange-labelContainer { left: -50%; position: relative; }
 
-.InputRange-label--max .InputRange-labelContainer { left: 50%; }
+.InputRange-label--max .InputRange-labelContainer { left: 35%; }
 
-.InputRange-track { background: #eeeeee; border-radius: 0.3rem; display: block; height: 0.3rem; position: relative; transition: left 0.3s ease-out, width 0.3s ease-out; }
+.InputRange-track { background: #eee; border-radius: 0.3rem; display: block; height: 0.3rem; position: relative; transition: left 0.3s ease-out, width 0.3s ease-out; }
 
-.InputRange.is-disabled .InputRange-track { background: #eeeeee; }
+.InputRange.is-disabled .InputRange-track { background: #eee; }
 
 .InputRange-track--container { left: 0; margin-top: -0.15rem; position: absolute; right: 0; top: 50%; }
 

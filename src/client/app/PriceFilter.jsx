@@ -6,17 +6,13 @@ class CarBar extends React.Component {
     constructor(props) {
         super(props);
     }
-
     render() {
         var carBarStyle = {
             left: this.props.left + 'px',
             height: this.props.height + 'px',
             width: this.props.width + 'px'
         };
-        return (
-          <div className="carBar" style={carBarStyle}>
-          </div>
-        );
+        return (<div className="carBar" style={carBarStyle}></div>);
     }
 }
 
@@ -24,38 +20,59 @@ var PriceFilter = React.createClass ({
     minPrice: 0,
     maxPrice: 100000,
     gap: 1000,
+    priceMultiplier: 7,
 
-    componentDidUpdate: function() {
-        // only do this if we haven't already done it
-        if(this.state.histogramCars.length) {
+    shouldUseLocalStorage: function() {
+        return localStorage.min && localStorage.max;
+    },
+
+    getLocalStorageValues: function() {
+        return {
+            min: parseInt(localStorage.min, 10),
+            max: parseInt(localStorage.max, 10)
+        }
+    },
+
+    componentWillMount: function() {
+        if(this.shouldUseLocalStorage()) {
+            this.setState({
+                values: this.getLocalStorageValues()
+            });
+        }
+    },
+
+    componentWillReceiveProps: function(nextProps) {
+        // We only want to do this on initial load
+        if (this.props.carList.length || !nextProps.carList.length) {
             return;
         }
+
         var histogramCars = [],
             defaultValues = {min: this.maxPrice, max: this.minPrice};
 
-        this.props.carList.forEach(car => {
+        nextProps.carList.forEach(car => {
             histogramCars.push(car.price);
             defaultValues.min = car.price < defaultValues.min ? car.price : defaultValues.min;
             defaultValues.max = car.price > defaultValues.max ? car.price : defaultValues.max;
         });
 
-        if(localStorage.min && localStorage.max) {
-            defaultValues = {
-                min: parseInt(localStorage.min, 10),
-                max: parseInt(localStorage.max, 10)
-            };
+        // Round to nearest thousands place
+        defaultValues.min = Math.floor(defaultValues.min / 1000) * 1000;
+        defaultValues.max = Math.ceil(defaultValues.max / 1000) * 1000;
+
+        // local storage takes precedence over defaults
+        if(this.shouldUseLocalStorage()) {
+            defaultValues = this.getLocalStorageValues();
         }
 
         this.setState({
             histogramCars: histogramCars,
-            values: {
-                min: defaultValues.min,
-                max: defaultValues.max
-            }
+            values: defaultValues
         });
+
     },
 
-    getInitialState: function(props) {
+    getInitialState: function() {
         return {
             histogramCars: [],
             values: {
@@ -66,9 +83,14 @@ var PriceFilter = React.createClass ({
     },
 
     handleChange: function(component, values) {
+        var histogramCars = [];
+        this.props.carList.forEach(car => {
+            histogramCars.push(car.price);
+        });
         this.setState({
-          values: values
-        })
+            histogramCars: histogramCars,
+            values: values
+        });
         this.props.onUserInput(
           values
         );
@@ -81,12 +103,13 @@ var PriceFilter = React.createClass ({
             numCars = 0,
             carWidth = document.getElementById('app').offsetWidth / ( (this.maxPrice - this.minPrice) / 1000 ),
             carPosition = 0;
+
         for(var i=this.minPrice; i <= this.maxPrice; i += this.gap) {
-            numCars = this.state.histogramCars.filter(car => {
-                return car <= i && car > i - 1000;
+            numCars = this.props.carList.filter(car => {
+                return car.price <= i && car.price > i - 1000;
             });
             numCars = numCars.length || 0;
-            histogram.push(<CarBar key={i} height={numCars*5} width={carWidth} left={carPosition} />);
+            histogram.push(<CarBar key={i} height={numCars*this.priceMultiplier} width={carWidth} left={carPosition} />);
             carPosition += carWidth;
         }
 
